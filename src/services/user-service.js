@@ -13,7 +13,6 @@ const userRepo = new UserRepository();
 
 async function create(data) {
   try {
-    console.log("User create data :", data);
     const user = await userRepo.create(data);
     return user;
   } catch (error) {
@@ -39,8 +38,6 @@ async function signin(data) {
     }
     const isPasswordValid = checkPassword(data.password, user.passwordHash);
 
-    console.log(isPasswordValid);
-    console.log(data.password, "and hashed", user.passwordHash);
 
     if (isPasswordValid == false) {
       throw new AppError("Invalid password!", StatusCodes.BAD_REQUEST);
@@ -51,7 +48,6 @@ async function signin(data) {
     const token = createToken({ id: user.id, email: user.email });
     return token;
   } catch (error) {
-    console.log("error inside user-service/signin", error);
     if (error instanceof AppError) {
       throw error;
     }

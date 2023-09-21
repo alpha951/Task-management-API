@@ -5,7 +5,6 @@ const { SuccessResponse, ErrorResponse } = require("../utils/common");
 
 async function createTask(req, res) {
   try {
-    console.log(req.body);
     const { desc, status, user_id } = req.body;
     const Task = await TaskService.createTask({
       description: desc,
@@ -17,7 +16,6 @@ async function createTask(req, res) {
 
     return res.status(StatusCodes.CREATED).json(SuccessResponse);
   } catch (error) {
-    console.log("error inside the controller", error);
     ErrorResponse.error = error;
     Logger.error(error);
     return res.status(error.statusCode).json(ErrorResponse);

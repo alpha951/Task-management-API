@@ -82,9 +82,11 @@ async function destroyTask(id) {
   }
 }
 
-async function updateTask(id, data) {
+async function updateTask(data) {
   try {
-    const response = await taskRepository.update(id, data);
+    const { id, user_id } = data;
+    const updatedData = { description: data.desc, status: data.status };
+    const response = await taskRepository.update(id, user_id, updatedData);
     return response;
   } catch (error) {
     if (error.statusCode == StatusCodes.NOT_FOUND) {

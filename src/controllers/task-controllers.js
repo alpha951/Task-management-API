@@ -55,7 +55,12 @@ async function getTask(req, res) {
 
 async function destroyTask(req, res) {
   try {
-    const response = await TaskService.destroyTask(req.params.id);
+    const data = {
+      id: req.params.id,
+      user_id: req.body.user_id,
+    };
+
+    const response = await TaskService.destroyTask(data);
     SuccessResponse.data = response;
     return res.status(StatusCodes.OK).json(SuccessResponse);
   } catch (error) {
@@ -67,7 +72,13 @@ async function destroyTask(req, res) {
 
 async function updateTask(req, res) {
   try {
-    const response = await TaskService.updateTask(req.params.id, req.body);
+    const data = {
+      id: req.params.id,
+      user_id: req.body.user_id,
+      desc: req.body.desc,
+      status: req.body.status,
+    };
+    const response = await TaskService.updateTask(data);
     SuccessResponse.data = response;
     return res.status(StatusCodes.OK).json(SuccessResponse);
   } catch (error) {

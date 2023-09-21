@@ -28,6 +28,50 @@ class TaskRepository extends CrudRepository {
     }
     return response;
   }
+
+  async destroy(data) {
+    const response = await this.model.destroy({
+      where: {
+        id: data.id,
+        createdby: data.user_id,
+      },
+    });
+    if (!response) {
+      throw new AppError(
+        "Not able to find the resource ",
+        StatusCodes.NOT_FOUND
+      );
+    }
+    return response;
+  }
+  async update(id, user_id, data) {
+    const tableAttributes = Object.keys(this.model.rawAttributes);
+    const reqAttributes = Object.keys(data);
+    const hasAllAttributes = reqAttributes.every((elem) =>
+      tableAttributes.includes(elem)
+    );
+    if (hasAllAttributes) {
+      const response = await this.model.update(data, {
+        where: {
+          id: id,
+          createdby: user_id,
+        },
+      });
+
+      if (response[0] == 0) {
+        throw new AppError(
+          "The data for the given ID could not be found",
+          StatusCodes.NOT_FOUND
+        );
+      }
+      return response;
+    } else {
+      throw new AppError(
+        "The column for the given ID could not be found",
+        StatusCodes.NOT_FOUND
+      );
+    }
+  }
 }
 
 module.exports = TaskRepository;

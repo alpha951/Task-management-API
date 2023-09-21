@@ -13,33 +13,38 @@ module.exports = {
      * }], {});
      */
     await queryInterface.bulkInsert(
-      "Tasks",
+      "Users",
       [
         {
-          description: "Study for exam",
-          status: "pending",
-          createdby: 1,
+          name: "Keshav",
+          email: "10xdev@vscode.com",
+          passwordHash:
+            "$2b$10$9zdspQi.dWq/xcrFfHnDauAp3wXgcsngN3e5eFW1KGtY6hEsh9P3q",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          description: "Meet with friends",
-          status: "pending",
-          createdby: 2,
+          name: "AlphaDev",
+          email: "leetcoders@vscode.com",
+          passwordHash:
+            "$2b$10$9zdspQi.dWq/xcrFfHnDauAp3wXgcsngN3e5eFW1KGtY6hEsh9P3q",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          description: "Go to class",
-          status: "completed",
-          createdby: 3,
+          name: "UnpaidIntern",
+          email: "gitIsNotGithub@vscode.com",
+          passwordHash:
+            "$2b$10$9zdspQi.dWq/xcrFfHnDauAp3wXgcsngN3e5eFW1KGtY6hEsh9P3q",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
+
         {
-          description: "Ask your crush out!",
-          status: "pending",
-          createdby: 4,
+          name: "DevVsCP",
+          email: "codeforcees@vscode.com",
+          passwordHash:
+            "$2b$10$9zdspQi.dWq/xcrFfHnDauAp3wXgcsngN3e5eFW1KGtY6hEsh9P3q",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -55,6 +60,5 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    await queryInterface.bulkDelete("Tasks", null, {});
   },
 };

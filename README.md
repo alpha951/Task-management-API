@@ -3,6 +3,7 @@
 ## Description
 
 - This API can be used for managing tasks. It is a REST API built with Node.js, Express.js and PostgreSQL.
+- To manage migrations we have used sequelize-cli and sequelize-orm.
 - This API supports JWT authentication and authorization.
 - This API follows robus error-handeling, Object Oriented Programming and MVC architecture.
 
@@ -16,7 +17,13 @@
 - Run ```npx sequelize init```  to setup sequelize.
 - Configure your ./config/config.json file to connect to your database.
 - Run ```npx sequelize db:migrate``` to run migrations.
-- Run ```npx sequelize db:seed:all``` to seed the database
+- Run ```npx sequelize db:seed 20230921112358-demo-users.js``` to seed the database with users.
+- Run ```npx sequelize db:seed 20230921081302-demo-tasks.js``` to seed the database with tasks.
+
+>  #### PASSOWRD for all the users is 1234 in Seeders
+
+## Database Sample
+![Database Sample](./db.png)
 
 ## API Documentation
 

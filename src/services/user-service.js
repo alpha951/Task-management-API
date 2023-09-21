@@ -13,6 +13,7 @@ const userRepo = new UserRepository();
 
 async function create(data) {
   try {
+    console.log("User create data :", data);
     const user = await userRepo.create(data);
     return user;
   } catch (error) {
@@ -36,16 +37,21 @@ async function signin(data) {
     if (!user) {
       throw new AppError("User not found!", StatusCodes.NOT_FOUND);
     }
-    const isPasswordValid = checkPassword(data.password, user.password);
+    const isPasswordValid = checkPassword(data.password, user.passwordHash);
+
     console.log(isPasswordValid);
-    console.log(data.password, user.password);
+    console.log(data.password, user.passwordHash);
+
     if (isPasswordValid == false) {
       throw new AppError("Invalid password!", StatusCodes.BAD_REQUEST);
     }
+
+    // Generate JWT token
+
     const token = createToken({ id: user.id, email: user.email });
     return token;
   } catch (error) {
-    console.log(error);
+    console.log("error inside user-service/signin", error);
     if (error instanceof AppError) {
       throw error;
     }
@@ -59,7 +65,7 @@ async function signin(data) {
 async function isAuthenticated(token) {
   try {
     if (!token) {
-      throw new AppError("Token is required!", StatusCodes.BAD_REQUEST);
+      throw new AppError("JWT Token is required!", StatusCodes.BAD_REQUEST);
     }
 
     const response = verifyToken(token);

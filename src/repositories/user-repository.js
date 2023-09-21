@@ -8,6 +8,10 @@ class UserRepository extends CrudRepository {
   }
 
   // here we can add more methods that are specific to this entity
+  async getUserByEmail(email) {
+    const user = await this.model.findOne({ where: { email: email } });
+    return user;
+  }
 }
 
 module.exports = UserRepository;

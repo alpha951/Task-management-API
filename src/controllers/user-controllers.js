@@ -6,8 +6,9 @@ const { SuccessResponse, ErrorResponse } = require("../utils/common");
 async function signup(req, res) {
   try {
     const user = await UserService.create({
+      name: req.body.name,
       email: req.body.email,
-      password: req.body.password,
+      passwordHash: req.body.password,
     });
     SuccessResponse.data = user;
     return res.status(StatusCodes.CREATED).json(SuccessResponse);

@@ -1,8 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { ServerConfig } = require("../../config");
-const AppError = require("../errors/app-error");
-const { StatusCodes } = require("http-status-codes");
 
 function checkPassword(plainPassword, encryptedPassword) {
   try {
@@ -26,10 +24,10 @@ function createToken(input) {
 function verifyToken(token) {
   try {
     const response = jwt.verify(token, ServerConfig.JWT_SECRET);
-    console.log(response);
+    console.log("verifyToken response printing", response);
     return response;
   } catch (error) {
-    console.log(error);
+    console.log("verifyToken error printing", error);
     throw error;
   }
 }

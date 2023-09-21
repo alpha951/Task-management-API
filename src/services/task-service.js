@@ -63,9 +63,9 @@ async function getTask(data) {
   }
 }
 
-async function destroyTask(id) {
+async function destroyTask(data) {
   try {
-    const response = await taskRepository.destroy(id);
+    const response = await taskRepository.destroy(data);
     return response;
   } catch (error) {
     if (error.statusCode == StatusCodes.NOT_FOUND) {

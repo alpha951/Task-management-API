@@ -72,6 +72,21 @@ class TaskRepository extends CrudRepository {
       );
     }
   }
+  async destroy(data) {
+    const response = await this.model.destroy({
+      where: {
+        id: data.id,
+        createdby: data.user_id,
+      },
+    });
+    if (!response) {
+      throw new AppError(
+        "Not able to find the resource ",
+        StatusCodes.NOT_FOUND
+      );
+    }
+    return response;
+  }
 }
 
 module.exports = TaskRepository;

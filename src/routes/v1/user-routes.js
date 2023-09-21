@@ -6,15 +6,14 @@ const { AuthMiddleware } = require("../../middlewares");
 
 router.post(
   "/signup",
-  AuthMiddlewares.validateAuthRequest,
-  UserControllers.signup
+  AuthMiddleware.validateAuthRequest,
+  UserController.signup
 );
 
 router.post(
   "/signin",
-  AuthMiddlewares.validateAuthRequest,
-  UserControllers.signin
+  AuthMiddleware.validateAuthRequest,
+  UserController.signin
 );
-
 
 module.exports = router;

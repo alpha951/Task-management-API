@@ -26,7 +26,8 @@ async function createTask(req, res) {
 
 async function getAllTasks(req, res) {
   try {
-    const Tasks = await TaskService.getAllTasks();
+    const { user_id } = req.body;
+    const Tasks = await TaskService.getAllTasks(user_id);
     SuccessResponse.data = Tasks;
     return res.status(StatusCodes.OK).json(SuccessResponse);
   } catch (error) {
@@ -38,7 +39,11 @@ async function getAllTasks(req, res) {
 
 async function getTask(req, res) {
   try {
-    const Tasks = await TaskService.getTask(req.params.id);
+    const data = {
+      id: req.params.id,
+      user_id: req.body.user_id,
+    };
+    const Tasks = await TaskService.getTask(data);
     SuccessResponse.data = Tasks;
     return res.status(StatusCodes.OK).json(SuccessResponse);
   } catch (error) {

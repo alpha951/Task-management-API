@@ -28,9 +28,9 @@ async function createTask(data) {
   }
 }
 
-async function getAllTasks() {
+async function getAllTasks(user_id) {
   try {
-    const tasks = await taskRepository.getAll();
+    const tasks = await taskRepository.getAll(user_id);
     return tasks;
   } catch (error) {
     console.log("error inside getAllTasks service is", error);

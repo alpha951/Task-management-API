@@ -8,7 +8,7 @@ class TaskRepository extends CrudRepository {
   }
 
   // here we can add more methods that are specific to this entity
-  async getAll(user_id = 4) {
+  async getAll(user_id) {
     const response = await this.model.findAll({
       where: { createdby: user_id },
     });
@@ -17,7 +17,9 @@ class TaskRepository extends CrudRepository {
 
   // TODO : update where user_id : id
   async get(data) {
-    const response = await this.model.findByPk(data);
+    const response = await this.model.findAll({
+      where: { id: data.id, createdby: data.user_id },
+    });
     if (!response) {
       throw new AppError(
         "Not able to find the resource ",

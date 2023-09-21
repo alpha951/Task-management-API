@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const {  UserController} = require("../../controllers");
+const { UserController } = require("../../controllers");
 const { AuthMiddleware } = require("../../middlewares");
 
 router.post(
@@ -16,11 +16,5 @@ router.post(
   UserControllers.signin
 );
 
-router.post(
-  "/role",
-  AuthMiddlewares.checkAuth,
-  AuthMiddlewares.checkAdmin,
-  UserControllers.addRoleToUser
-);
 
 module.exports = router;

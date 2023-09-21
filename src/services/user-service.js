@@ -1,18 +1,22 @@
 const { StatusCodes } = require("http-status-codes");
-const { Logger } = require("../config");
+
 const { UserRepository } = require("../repositories");
 const AppError = require("../utils/errors/app-error");
 
-// new instance of the userRepository class
-const userRepository = new UserRepository();
+const {
+  checkPassword,
+  createToken,
+  verifyToken,
+} = require("../utils/common/auth");
 
-async function createuser(data) {
+const userRepo = new UserRepository();
+
+async function create(data) {
   try {
-    const user = await userRepository.create(data);
+    const user = await userRepo.create(data);
     return user;
   } catch (error) {
     if (error.name == "SequelizeValidationError") {
-      // If u get a SequelizeValidationError, it is something that is not coming correctly from the client side.  We have to send a meaningful full response to the user/client that this validation is not going correctly, so please correct this field. So status code will also be some client related status code.
       let explanation = [];
       error.errors.forEach((err) => {
         explanation.push(err.message);
@@ -20,94 +24,60 @@ async function createuser(data) {
       throw new AppError(explanation, StatusCodes.BAD_REQUEST); // Send client-related status code for SequelizeValidationError
     }
     throw new AppError(
-      "Cannot create a new user Object!",
+      "Cannot create a new User Object!",
       StatusCodes.INTERNAL_SERVER_ERROR
     ); // Or else send server-related status code
   }
 }
 
-async function getAllusers() {
+async function signin(data) {
   try {
-    const users = await userRepository.getAll();
-    return users;
+    const user = await userRepo.getUserByEmail(data.email);
+    if (!user) {
+      throw new AppError("User not found!", StatusCodes.NOT_FOUND);
+    }
+    const isPasswordValid = checkPassword(data.password, user.password);
+    console.log(isPasswordValid);
+    console.log(data.password, user.password);
+    if (isPasswordValid == false) {
+      throw new AppError("Invalid password!", StatusCodes.BAD_REQUEST);
+    }
+    const token = createToken({ id: user.id, email: user.email });
+    return token;
   } catch (error) {
-    throw new AppError(
-      "Something went wrong while getting all users",
-      StatusCodes.INTERNAL_SERVER_ERROR
-    );
-  }
-}
-
-async function getuser(data) {
-  try {
-    const user = await userRepository.get(data);
-    return user;
-  } catch (error) {
-    console.log("error in service is", error);
-    Logger.error(error);
-
-    if (error.statusCode == StatusCodes.NOT_FOUND) {
-      console.log("Failing in service layer due to status code not found");
-      throw new AppError(
-        "The user you requested is not present in the database",
-        error.statusCode
-      );
+    console.log(error);
+    if (error instanceof AppError) {
+      throw error;
     }
     throw new AppError(
-      "Something went wrong while getting user by id",
+      "Something went wrong",
       StatusCodes.INTERNAL_SERVER_ERROR
     );
   }
 }
 
-async function destroyuser(id) {
+async function isAuthenticated(token) {
   try {
-    const response = await userRepository.destroy(id);
-    return response;
-  } catch (error) {
-    if (error.statusCode == StatusCodes.NOT_FOUND) {
-      throw new AppError(
-        "The user you requested to delete is not present in the database",
-        error.statusCode
-      );
+    if (!token) {
+      throw new AppError("Token is required!", StatusCodes.BAD_REQUEST);
     }
 
-    throw new AppError(
-      "Something went wrong while getting all users",
-      StatusCodes.INTERNAL_SERVER_ERROR
-    );
-  }
-}
-
-async function updateuser(id, data) {
-  try {
-    const response = await userRepository.update(id, data);
-    return response;
-  } catch (error) {
-    if (error.statusCode == StatusCodes.NOT_FOUND) {
-      throw new AppError(
-        // error.message, //Overriding the error message thrown from the destroy(id) function inside the crud-repository file
-        "For the request you made, there is no user / column available to update!",
-        error.statusCode
-      );
-    } else if (error.name == "SequelizeValidationError") {
-      let explanation = [];
-      error.errors.forEach((err) => {
-        explanation.push(err.message);
-      });
-      throw new AppError(explanation, StatusCodes.BAD_REQUEST); // Send client-related status code for SequelizeValidationError
+    const response = verifyToken(token);
+    console.log(response);
+    const user = await userRepo.get(response.id);
+    if (!user) {
+      throw new AppError("User not found!", StatusCodes.NOT_FOUND);
     }
-    throw new AppError(
-      `The user's data cannot be updated!`,
-      StatusCodes.INTERNAL_SERVER_ERROR
-    );
+    return user.id;
+  } catch (error) {
+    if (error instanceof AppError) throw error;
+    if (error.name == "JsonWebTokenError") {
+      throw new AppError("Invalid token!", StatusCodes.BAD_REQUEST);
+    }
+    if (error.name == "TokenExpiredError") {
+      throw new AppError("Token expired!", StatusCodes.BAD_REQUEST);
+    }
   }
 }
 
-module.exports = {
-  createuser,
-  getAllusers,
-  getuser,
-  destroyuser,
-  updateuser,
-};
+module.exports = { create, signin, isAuthenticated };

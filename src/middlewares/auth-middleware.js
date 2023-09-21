@@ -25,21 +25,21 @@ function validateAuthRequest(req, res, next) {
 
 async function checkAuth(req, res, next) {
   try {
-    console.log(
-      "x-access-token in the header, auth-middleware",
-      req.headers["x-access-token"]
-    );
+    // console.log(
+    //   "x-access-token in the header, auth-middleware",
+    //   req.headers["x-access-token"]
+    // );
     const response = await UserService.isAuthenticated(
       req.headers["x-access-token"]
     );
-    console.log(response);
-    if (response) {
-      req.user = response; // Add user_id to the request object
-      next();
+    // console.log("response in check Auth middleware", response);
+    if (!response) {
+      return res
+        .status(StatusCodes.UNAUTHORIZED)
+        .json({ message: "Unauthorized" });
     }
-    return res
-      .status(StatusCodes.UNAUTHORIZED)
-      .json({ message: "Unauthorized" });
+    req.body.user_id = response; // Add user_id to the request object
+    next();
   } catch (error) {
     console.log(error);
     return res.status(error.statusCode).json(error);

@@ -8,9 +8,11 @@ const taskRepository = new TaskRepository();
 
 async function createTask(data) {
   try {
-    const Task = await taskRepository.create(data);
-    return Task;
+    console.log(data);
+    const tasks = await taskRepository.create(data);
+    return tasks;
   } catch (error) {
+    console.log(error);
     if (error.name == "SequelizeValidationError") {
       // If u get a SequelizeValidationError, it is something that is not coming correctly from the client side.  We have to send a meaningful full response to the user/client that this validation is not going correctly, so please correct this field. So status code will also be some client related status code.
       let explanation = [];
@@ -28,9 +30,10 @@ async function createTask(data) {
 
 async function getAllTasks() {
   try {
-    const Tasks = await taskRepository.getAll();
-    return Tasks;
+    const tasks = await taskRepository.getAll();
+    return tasks;
   } catch (error) {
+    console.log("error inside getAllTasks service is", error);
     throw new AppError(
       "Something went wrong while getting all Tasks",
       StatusCodes.INTERNAL_SERVER_ERROR
@@ -40,8 +43,8 @@ async function getAllTasks() {
 
 async function getTask(data) {
   try {
-    const Task = await taskRepository.get(data);
-    return Task;
+    const tasks = await taskRepository.get(data);
+    return tasks;
   } catch (error) {
     console.log("error in service is", error);
     Logger.error(error);

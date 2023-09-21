@@ -40,7 +40,7 @@ async function signin(data) {
     const isPasswordValid = checkPassword(data.password, user.passwordHash);
 
     console.log(isPasswordValid);
-    console.log(data.password, user.passwordHash);
+    console.log(data.password, "and hashed", user.passwordHash);
 
     if (isPasswordValid == false) {
       throw new AppError("Invalid password!", StatusCodes.BAD_REQUEST);
@@ -69,7 +69,10 @@ async function isAuthenticated(token) {
     }
 
     const response = verifyToken(token);
-    console.log(response);
+    console.log(
+      "verify token function response.id inside isAuthenticated function userservice: --",
+      response.id
+    );
     const user = await userRepo.get(response.id);
     if (!user) {
       throw new AppError("User not found!", StatusCodes.NOT_FOUND);

@@ -5,11 +5,12 @@ const { SuccessResponse, ErrorResponse } = require("../utils/common");
 
 async function createTask(req, res) {
   try {
-    const { desc, status } = req.body;
+    console.log(req.body);
+    const { desc, status, user_id } = req.body;
     const Task = await TaskService.createTask({
       description: desc,
       status: status,
-      createdby: req.user.id,
+      createdby: user_id,
     });
 
     SuccessResponse.data = Task;

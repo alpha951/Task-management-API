@@ -4,6 +4,7 @@
 
 - This API can be used for managing tasks. It is a REST API built with Node.js, Express.js and PostgreSQL.
 - This API supports JWT authentication and authorization.
+- This API follows robus error-handeling, Object Oriented Programming and MVC architecture.
 
 ## Local Setup
 ```bash
